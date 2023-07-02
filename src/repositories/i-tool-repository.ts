@@ -5,4 +5,5 @@ export interface IToolRepository{
     findAll: (slug?: string) => Promise<Tool[]>
     findById: (toolId: number) => Promise<Tool | null>
     findByTitle: (title: string) => Promise<Tool | null>
+    destroy: (toolId: number) => Promise<void>
 }

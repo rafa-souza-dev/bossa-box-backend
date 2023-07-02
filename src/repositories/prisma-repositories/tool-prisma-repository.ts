@@ -67,4 +67,12 @@ export class ToolPrismaRepository implements IToolRepository {
 
         return tool || null
     }
+
+    async destroy(toolId: number) {
+        await prisma.tool.delete({
+            where: {
+                id: toolId
+            }
+        })
+    }
 }

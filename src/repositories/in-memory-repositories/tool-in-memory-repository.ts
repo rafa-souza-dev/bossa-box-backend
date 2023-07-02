@@ -63,4 +63,8 @@ export class ToolInMemoryRepository implements IToolRepository {
             tagId
         })
     }
+
+    async destroy(toolId: number) {
+        this.toolsData = this.toolsData.filter(tool => tool.id !== toolId)
+    }
 }
