@@ -1,5 +1,6 @@
 import { Prisma, Tool } from "@prisma/client";
 import { IToolRepository } from "../i-tool-repository";
+import { GetResult } from "@prisma/client/runtime";
 
 export class ToolInMemoryRepository implements IToolRepository {
     private toolsData: Tool[] = []
@@ -23,6 +24,12 @@ export class ToolInMemoryRepository implements IToolRepository {
 
     async findById(toolId: number) {
         const tool = this.toolsData.find(tool => tool.id === toolId)
+
+        return tool || null
+    }
+
+    async findByTitle(title: string) {
+        const tool = this.toolsData.find(tool => tool.title === title)
 
         return tool || null
     }

@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../prisma";
 import { IToolRepository } from "../i-tool-repository";
+import { GetResult } from "@prisma/client/runtime";
 
 export class ToolPrismaRepository implements IToolRepository {
     async create(data: Prisma.ToolCreateInput) {
@@ -43,6 +44,16 @@ export class ToolPrismaRepository implements IToolRepository {
                         slug: true
                     }
                 }
+            }
+        })
+
+        return tool || null
+    }
+
+    async findByTitle(title: string) {
+        const tool = await prisma.tool.findUnique({
+            where: {
+                title
             }
         })
 
