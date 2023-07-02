@@ -1,5 +1,6 @@
 import { Prisma, Tag } from "@prisma/client";
 import { ITagRepository } from "../i-tag-repository";
+import { GetResult } from "@prisma/client/runtime";
 
 export class TagInMemoryRepository implements ITagRepository {
     private data: Tag[] = []
@@ -32,5 +33,11 @@ export class TagInMemoryRepository implements ITagRepository {
         })
 
         return this.data
+    }
+
+    async findBySlug(slug: string) {
+        const tag = this.data.find(tag => tag.slug === slug)
+
+        return tag || null
     }
 }

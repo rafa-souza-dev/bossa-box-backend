@@ -1,9 +1,17 @@
 import { Prisma, Tool } from "@prisma/client";
 import { IToolRepository } from "../i-tool-repository";
-import { GetResult } from "@prisma/client/runtime";
+import { ITagRepository } from "../i-tag-repository";
 
 export class ToolInMemoryRepository implements IToolRepository {
     private toolsData: Tool[] = []
+    private toolsTagsData: {
+        toolId: number;
+        tagId: number;
+    }[] = []
+
+    constructor(
+        private tagRepository: ITagRepository
+    ) {}
 
     async create(data: Prisma.ToolUncheckedCreateInput) {
         const tool: Tool = {
@@ -18,8 +26,23 @@ export class ToolInMemoryRepository implements IToolRepository {
         return tool
     }
 
-    async findAll() {
-        return this.toolsData
+    async findAll(slug: string = "") {
+        if (slug === "") return this.toolsData
+
+        const tag = await this.tagRepository.findBySlug(slug)
+
+        if (!tag) {
+            return []
+        }
+
+        const tagId = tag.id
+
+        const filteredToolsIds = this.toolsTagsData.filter(toolsTagObject => toolsTagObject.tagId === tagId)
+            .map(toolsTagObject => toolsTagObject.toolId)
+
+        const tools = this.toolsData.filter(tool => filteredToolsIds.includes(tool.id))
+
+        return tools
     }
 
     async findById(toolId: number) {
@@ -32,5 +55,12 @@ export class ToolInMemoryRepository implements IToolRepository {
         const tool = this.toolsData.find(tool => tool.title === title)
 
         return tool || null
+    }
+
+    async connectToolTag(toolId: number, tagId: number) {
+        this.toolsTagsData.push({
+            toolId,
+            tagId
+        })
     }
 }

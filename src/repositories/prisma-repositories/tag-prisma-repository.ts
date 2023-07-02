@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { ITagRepository } from "../i-tag-repository";
 import { prisma } from "../../prisma";
+import { GetResult } from "@prisma/client/runtime";
 
 export class TagPrismaRepository implements ITagRepository {
     async create(data: Prisma.TagCreateInput) {
@@ -41,5 +42,15 @@ export class TagPrismaRepository implements ITagRepository {
         })
 
         return tags
+    }
+
+    async findBySlug(slug: string) {
+        const tag = await prisma.tag.findFirst({
+            where: {
+                slug
+            }
+        })
+
+        return tag || null
     }
 }

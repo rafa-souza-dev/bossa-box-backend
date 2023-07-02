@@ -12,7 +12,7 @@ let sut: CreateToolUseCase
 describe('Black Box tests to Create Tool Use Case', () => {
     beforeEach(() => {
         tagRepository = new TagInMemoryRepository()
-        toolRepository = new ToolInMemoryRepository()
+        toolRepository = new ToolInMemoryRepository(tagRepository)
         sut = new CreateToolUseCase(toolRepository, tagRepository)
     })
 
