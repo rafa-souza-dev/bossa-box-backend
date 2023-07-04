@@ -22,12 +22,14 @@ export class CreateToolUseCase {
 
         const tags = await this.tagRepository.findManyBySlugOrCreate(slugs)
 
+        const connectSlugs = tags.map(tag => ({ slug: tag.slug }))
+
         const newTool = await this.toolRepository.create({
             description: tool.description,
             link: tool.link,
             title: tool.title,
             tags: {
-                connect: tags
+                connect: connectSlugs
             }
         })
 

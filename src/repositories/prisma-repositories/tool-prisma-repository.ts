@@ -6,11 +6,15 @@ export class ToolPrismaRepository implements IToolRepository {
     async create(data: Prisma.ToolCreateInput) {
         const tool = await prisma.tool.create({
             data,
-            include: {
+            select: {
+                id: true,
+                description: true,
+                link: true,
+                title: true,
                 tags: {
                     select: {
                         slug: true
-                    }
+                    }                    
                 }
             }
         })
