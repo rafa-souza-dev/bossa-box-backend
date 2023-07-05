@@ -1,4 +1,3 @@
-import { ITagRepository } from "../../repositories/i-tag-repository";
 import { IToolRepository } from "../../repositories/i-tool-repository";
 import { CreateToolUseCaseRequest, CreateToolUseCaseResponse } from "./dtos";
 import { ToolAlreadyExists } from "./errors";
@@ -6,7 +5,6 @@ import { ToolAlreadyExists } from "./errors";
 export class CreateToolUseCase {
     constructor(
         private toolRepository: IToolRepository,
-        private tagRepository: ITagRepository
     ) {}
 
     async handle({
@@ -20,16 +18,21 @@ export class CreateToolUseCase {
             throw new ToolAlreadyExists()
         }
 
-        const tags = await this.tagRepository.findManyBySlugOrCreate(slugs)
-
-        const connectSlugs = tags.map(tag => ({ slug: tag.slug }))
+        const connectSlugs = slugs.map(slug => ({
+            where: {
+                slug
+            },
+            create: {
+                slug
+            }
+        }))
 
         const newTool = await this.toolRepository.create({
             description: tool.description,
             link: tool.link,
             title: tool.title,
             tags: {
-                connect: connectSlugs
+                connectOrCreate: connectSlugs
             }
         })
 

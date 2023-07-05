@@ -18,32 +18,6 @@ export class TagPrismaRepository implements ITagRepository {
         return tags
     }
 
-    async findManyBySlugOrCreate(slugs: string[]) {
-        const tags = await prisma.tag.findMany({
-            where: {
-                slug: {
-                    in: slugs
-                }
-            }
-        })
-
-        const isNotCreatedTags = slugs.filter(slug => {
-            const slugTags = tags.map(tag => tag.slug)
-
-            return !slugTags.includes(slug)
-        })
-
-        isNotCreatedTags.forEach(async (slug) => {
-            tags.push(await prisma.tag.create({
-                data: {
-                    slug
-                }
-            }))
-        })
-
-        return tags
-    }
-
     async findBySlug(slug: string) {
         const tag = await prisma.tag.findFirst({
             where: {

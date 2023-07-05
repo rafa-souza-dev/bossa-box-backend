@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { TagPrismaRepository } from "../../repositories/prisma-repositories/tag-prisma-repository";
 import { ToolPrismaRepository } from "../../repositories/prisma-repositories/tool-prisma-repository";
 import { CreateToolUseCase } from "../../use-cases/create-tool/create-tool-use-case";
 import { ToolAlreadyExists } from "../../use-cases/create-tool/errors";
@@ -21,12 +20,8 @@ export async function createToolController(req: FastifyRequest, res: FastifyRepl
     } = createToolValidationSchema.parse(req.body)
 
     try {
-        const tagRepository = new TagPrismaRepository()
         const toolRepository = new ToolPrismaRepository()
-        const createToolUseCase = new CreateToolUseCase(
-            toolRepository,
-            tagRepository
-        )
+        const createToolUseCase = new CreateToolUseCase(toolRepository)
 
         const { tool } = await createToolUseCase.handle({
             tool: {
