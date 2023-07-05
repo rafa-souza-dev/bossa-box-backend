@@ -32,13 +32,18 @@ export async function createToolController(req: FastifyRequest, res: FastifyRepl
             slugs: tags
         })
 
-        return res.status(201).send({
-            id: tool.id,    
-            title,
-            link,
-            description,
-            tags
+        const toolTagsSchema = z.object({
+            id: z.number(),
+            title: z.string(),
+            description: z.string(),
+            tags: z.array(z.object({
+                slug: z.string()
+            })).transform(tags => tags.map(tag => tag.slug))
         })
+
+        const createdTool = toolTagsSchema.parse(tool)
+
+        return res.status(201).send(createdTool)
     } catch (error) {
         console.log(error)
         if (error instanceof ToolAlreadyExists) {
