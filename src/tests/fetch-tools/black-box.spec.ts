@@ -1,7 +1,7 @@
 import { it, describe, expect, beforeEach } from "vitest"
 import { TagInMemoryRepository } from "../../repositories/in-memory-repositories/tag-in-memory-repository";
 import { ToolInMemoryRepository } from "../../repositories/in-memory-repositories/tool-in-memory-repository";
-import { FetchToolsUseCase } from "../../use-cases/get-tools/fetch-tools-use-case";
+import { FetchToolsUseCase } from "../../use-cases/fetch-tools/fetch-tools-use-case";
 
 let tagRepository: TagInMemoryRepository;
 let toolRepository: ToolInMemoryRepository;

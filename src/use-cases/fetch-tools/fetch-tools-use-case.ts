@@ -7,10 +7,11 @@ export class FetchToolsUseCase {
     ) {}
 
     async handle({
-        slug=""
+        slug
     }: FetchToolsUseCaseRequest)
     : Promise<FetchToolsUseCaseResponse> {
-        const tools = await this.toolRepository.findAll(slug)
+        const tools = slug === undefined ? await this.toolRepository.findAll() :
+            await this.toolRepository.findAllFilterTag(slug)
         
         return { tools }
     }

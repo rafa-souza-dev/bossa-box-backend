@@ -1,6 +1,7 @@
 import { Prisma, Tool } from "@prisma/client";
 import { IToolRepository } from "../i-tool-repository";
 import { ITagRepository } from "../i-tag-repository";
+import { GetResult } from "@prisma/client/runtime";
 
 export class ToolInMemoryRepository implements IToolRepository {
     private toolsData: Tool[] = []
@@ -26,9 +27,11 @@ export class ToolInMemoryRepository implements IToolRepository {
         return tool
     }
 
-    async findAll(slug: string = "") {
-        if (slug === "") return this.toolsData
+    async findAll() {
+        return this.toolsData
+    }
 
+    async findAllFilterTag(slug: string) {
         const tag = await this.tagRepository.findBySlug(slug)
 
         if (!tag) {

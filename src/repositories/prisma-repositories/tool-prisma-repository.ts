@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../prisma";
 import { IToolRepository } from "../i-tool-repository";
+import { GetResult } from "@prisma/client/runtime";
 
 export class ToolPrismaRepository implements IToolRepository {
     async create(data: Prisma.ToolCreateInput) {
@@ -22,7 +23,21 @@ export class ToolPrismaRepository implements IToolRepository {
         return tool
     }
 
-    async findAll(slug: string = "") {
+    async findAll() {
+        const tools = await prisma.tool.findMany({
+            include: {
+                tags: {
+                    select: {
+                        slug: true
+                    }
+                }
+            }
+        })
+
+        return tools
+    }
+
+    async findAllFilterTag(slug: string) {
         const tools = await prisma.tool.findMany({
             include: {
                 tags: {
@@ -33,10 +48,8 @@ export class ToolPrismaRepository implements IToolRepository {
             },
             where: {
                 tags: {
-                    every: {
-                        slug: {
-                            contains: slug
-                        }
+                    some: {
+                        slug
                     }
                 }
             }
